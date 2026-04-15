@@ -295,3 +295,33 @@ export async function createPipelineLog(
     return null;
   }
 }
+
+/**
+ * Update staff task status in the database
+ * Falls back to mock data on error
+ */
+export async function updateStaffTaskStatus(
+  id: string,
+  status: StaffTask['status']
+): Promise<void> {
+  if (!isSupabaseConfigured()) {
+    console.warn('[KitchenOS][updateStaffTaskStatus] Supabase not configured. Using mock data.');
+    return;
+  }
+
+  try {
+    const { error } = await supabase
+      .from('staff_tasks')
+      .update({ status })
+      .eq('id', id);
+
+    if (error) throw error;
+  } catch (err) {
+    console.error('[KitchenOS][updateStaffTaskStatus]', err);
+    await createPipelineLog({
+      level: 'ERROR',
+      message: `Failed to update staff task status: ${err instanceof Error ? err.message : 'Unknown error'}`,
+    });
+    throw err;
+  }
+}
