@@ -24,7 +24,7 @@ These are immutable truths about the project. No task, no instruction, no "helpf
 | Product Type | B2B Internal Operations System (NOT consumer-facing) |
 | Budget | `₹0 / $0` — Zero. Absolutely no paid tools, APIs, or services. |
 | Prototype Goal | 100% working demo, not production infra |
-| Frontend Framework | React 18 + TypeScript + Vite (locked) |
+| Frontend Framework | React 18 + TypeScript + nextjs (locked) |
 | Styling System | Tailwind CSS v3 only (locked) |
 | Database | Supabase free tier only (locked) |
 | State Management | Zustand only (locked) |
@@ -86,7 +86,7 @@ The following actions are **absolutely prohibited**. If any task, prompt, or ins
 ❌ NEVER create a new file without updating structure.md
 ❌ NEVER deploy without updating handoff.md
 ❌ NEVER commit .env.local to git (it is already in .gitignore — verify this on init)
-❌ NEVER hardcode Supabase URL or anon key inline — always use import.meta.env.VITE_*
+❌ NEVER hardcode Supabase URL or anon key inline — always use import.meta.env.nextjs_*
 ❌ NEVER use `any` TypeScript type — every value must be explicitly typed
 ❌ NEVER create circular imports between lib/, hooks/, and store/
 ❌ NEVER put mock data inline in components — always import from src/lib/mockData.ts
@@ -210,7 +210,7 @@ export function useOrders(): UseOrdersReturn {
 
 ```
 ✅ ALWAYS initialize Supabase client in src/lib/supabase.ts only (singleton pattern)
-✅ ALWAYS use VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY from .env.local
+✅ ALWAYS use nextjs_SUPABASE_URL and nextjs_SUPABASE_ANON_KEY from .env.local
 ✅ ALWAYS enable Row Level Security on every table (SQL provided in main prompt)
 ✅ ALWAYS handle Supabase errors: const { data, error } = await supabase.from(...) — check error before using data
 ✅ ALWAYS add all 4 tables to supabase_realtime publication (SQL provided in main prompt)
@@ -223,8 +223,8 @@ export function useOrders(): UseOrdersReturn {
 // src/lib/supabase.ts
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+const supabaseUrl = import.meta.env.nextjs_SUPABASE_URL as string;
+const supabaseAnonKey = import.meta.env.nextjs_SUPABASE_ANON_KEY as string;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('[KitchenOS] Missing Supabase environment variables. Check .env.local');
@@ -318,8 +318,8 @@ The following 5 files in `docs/` must be kept current. An outdated doc is a fail
 
 ```bash
 # .env.local (NEVER commit this file)
-VITE_SUPABASE_URL=https://[your-project-id].supabase.co
-VITE_SUPABASE_ANON_KEY=[your-anon-key]
+nextjs_SUPABASE_URL=https://[your-project-id].supabase.co
+nextjs_SUPABASE_ANON_KEY=[your-anon-key]
 
 # That is ALL. Two variables. Nothing else.
 # If a feature requires more env vars, it is OUT OF SCOPE.
@@ -547,7 +547,7 @@ Run through this checklist in order before every `vercel --prod` deployment:
 □ All status badges render correctly
 □ App loads in < 3 seconds on a standard connection
 □ No broken imports (run `npm run build` — must complete with 0 errors)
-□ Vercel environment variables set: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY
+□ Vercel environment variables set: nextjs_SUPABASE_URL, nextjs_SUPABASE_ANON_KEY
 □ Fallback to mock data works when Supabase env vars are removed (test locally)
 ```
 

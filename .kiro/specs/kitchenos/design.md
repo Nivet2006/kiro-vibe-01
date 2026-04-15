@@ -14,7 +14,7 @@ KitchenOS is an autonomous restaurant operations system that integrates Order En
 
 ### Technology Stack
 
-- **Frontend**: React 18 + TypeScript + Vite
+- **Frontend**: React 18 + TypeScript + nextjs
 - **Styling**: Tailwind CSS v3 (cyber-industrial design system)
 - **State Management**: Zustand (lightweight, minimal boilerplate)
 - **Database**: Supabase (PostgreSQL + Realtime + Auth)
@@ -414,8 +414,8 @@ export async function decrementInventory(items: OrderItem[]): Promise<void> {
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+const supabaseUrl = import.meta.env.nextjs_SUPABASE_URL as string;
+const supabaseAnonKey = import.meta.env.nextjs_SUPABASE_ANON_KEY as string;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('[KitchenOS] Missing Supabase environment variables');
@@ -1049,7 +1049,7 @@ describe('State Machine Properties', () => {
 
 #### Unit Testing
 
-**Library**: Vitest (fast, Vite-native test runner)
+**Library**: nextjsst (fast, nextjs-native test runner)
 
 **Focus Areas**:
 - Component rendering with specific props
@@ -1155,11 +1155,11 @@ jobs:
 
 ### Build Configuration
 
-**Vite Configuration** (`vite.config.ts`):
+**nextjs Configuration** (`nextjs.config.ts`):
 
 ```typescript
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'nextjs';
+import react from '@nextjsjs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
@@ -1192,10 +1192,10 @@ export default defineConfig({
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "framework": "vite",
+  "framework": "nextjs",
   "env": {
-    "VITE_SUPABASE_URL": "@supabase-url",
-    "VITE_SUPABASE_ANON_KEY": "@supabase-anon-key"
+    "nextjs_SUPABASE_URL": "@supabase-url",
+    "nextjs_SUPABASE_ANON_KEY": "@supabase-anon-key"
   }
 }
 ```
@@ -1213,12 +1213,12 @@ export default defineConfig({
 
 ```bash
 # Production (Vercel)
-VITE_SUPABASE_URL=https://[project-id].supabase.co
-VITE_SUPABASE_ANON_KEY=[anon-key]
+nextjs_SUPABASE_URL=https://[project-id].supabase.co
+nextjs_SUPABASE_ANON_KEY=[anon-key]
 
 # Development (.env.local)
-VITE_SUPABASE_URL=https://[project-id].supabase.co
-VITE_SUPABASE_ANON_KEY=[anon-key]
+nextjs_SUPABASE_URL=https://[project-id].supabase.co
+nextjs_SUPABASE_ANON_KEY=[anon-key]
 ```
 
 **Security Notes**:

@@ -9,12 +9,12 @@ The implementation follows a bottom-up approach: establishing project infrastruc
 ## Tasks
 
 - [x] 1. Project initialization and configuration
-  - Initialize Vite + React + TypeScript project with `npm create vite@latest kitchenos -- --template react-ts`
+  - Initialize nextjs + React + TypeScript project with `npm create nextjs@latest kitchenos -- --template react-ts`
   - Install core dependencies: `@supabase/supabase-js`, `zustand`, `react-router-dom`, `@hello-pangea/dnd`, `recharts`, `lucide-react`, `date-fns`
-  - Install dev dependencies: `tailwindcss`, `postcss`, `autoprefixer`, `vitest`, `@testing-library/react`, `fast-check`
+  - Install dev dependencies: `tailwindcss`, `postcss`, `autoprefixer`, `nextjsst`, `@testing-library/react`, `fast-check`
   - Configure Tailwind CSS with custom design tokens (colors, fonts, spacing) from GUARDRAIL.md Section 8
-  - Create `.env.local` with Supabase environment variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
-  - Configure `vite.config.ts` with code splitting and optimization settings
+  - Create `.env.local` with Supabase environment variables (nextjs_SUPABASE_URL, nextjs_SUPABASE_ANON_KEY)
+  - Configure `nextjs.config.ts` with code splitting and optimization settings
   - Set up `.gitignore` to exclude `.env.local`, `node_modules`, `dist`
   - _Requirements: 17.1, 18.1, 19.1, 19.5_
 
@@ -41,11 +41,11 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - Implement `transitionOrder(order: Order, newStatus: OrderStatus, manualOverride: boolean): Promise<void>` function
     - _Requirements: 1.1, 1.6_
   
-  - [-] 4.2 Write property test for state machine transitions
+  - [x] 4.2 Write property test for state machine transitions
     - **Property 1: State Machine Enforces Valid Sequential Transitions**
     - **Validates: Requirements 1.1**
   
-  - [ ] 4.3 Write property test for invalid transitions
+  - [x] 4.3 Write property test for invalid transitions
     - **Property 6: Invalid State Transitions Rejected**
     - **Validates: Requirements 1.6**
 
@@ -536,7 +536,7 @@ The implementation follows a bottom-up approach: establishing project infrastruc
 
 - [ ] 34. Build and deployment preparation
   - [~] 34.1 Configure production build settings
-    - Verify `vite.config.ts` has code splitting and minification enabled
+    - Verify `nextjs.config.ts` has code splitting and minification enabled
     - Verify source maps are disabled in production
     - _Requirements: 19.1, 19.6_
   

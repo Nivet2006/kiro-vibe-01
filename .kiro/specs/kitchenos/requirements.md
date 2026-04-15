@@ -296,7 +296,7 @@ The system operates as a desktop-first web application with four core modules: C
 2. THE KitchenOS SHALL deploy to Vercel free tier
 3. THE KitchenOS SHALL load environment variables from Vercel environment settings
 4. THE KitchenOS SHALL serve static assets from Vercel CDN
-5. THE KitchenOS SHALL use Vite for build tooling and development server
+5. THE KitchenOS SHALL use Next js for build tooling and development server
 6. THE KitchenOS SHALL generate a production bundle with code splitting and tree shaking
 7. FOR ALL production builds, the system SHALL exclude source maps and development-only code
 
