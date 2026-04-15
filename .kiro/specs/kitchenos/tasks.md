@@ -35,13 +35,13 @@ The implementation follows a bottom-up approach: establishing project infrastruc
   - **Validates: Requirements 5.2**
 
 - [ ] 4. Implement state machine core logic
-  - [~] 4.1 Create `src/lib/stateMachine.ts` with state transition validation
+  - [x] 4.1 Create `src/lib/stateMachine.ts` with state transition validation
     - Implement `ORDER_STATE_MACHINE` constant defining valid transitions
     - Implement `canTransition(from: OrderStatus, to: OrderStatus): boolean` function
     - Implement `transitionOrder(order: Order, newStatus: OrderStatus, manualOverride: boolean): Promise<void>` function
     - _Requirements: 1.1, 1.6_
   
-  - [ ] 4.2 Write property test for state machine transitions
+  - [-] 4.2 Write property test for state machine transitions
     - **Property 1: State Machine Enforces Valid Sequential Transitions**
     - **Validates: Requirements 1.1**
   
