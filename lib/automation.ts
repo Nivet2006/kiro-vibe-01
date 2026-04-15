@@ -34,7 +34,6 @@ export async function executeTransitionSideEffects(
         priority: 'high',
         assignedTo: null,
         status: 'pending',
-        createdAt: new Date().toISOString(),
       });
       console.log(`[Automation] Created delivery task for order #${order.id}`);
       break;
@@ -51,7 +50,6 @@ export async function executeTransitionSideEffects(
         priority: 'low',
         assignedTo: null,
         status: 'pending',
-        createdAt: new Date().toISOString(),
       });
       console.log(`[Automation] Created cleaning task for table ${order.tableNumber}`);
       break;
@@ -126,7 +124,6 @@ export async function createRestockTask(inventory: InventoryItem): Promise<void>
     priority: 'medium',
     assignedTo: null,
     status: 'pending',
-    createdAt: new Date().toISOString(),
   });
   
   console.log(`[Automation] Restock task created for ${inventory.itemName}`);

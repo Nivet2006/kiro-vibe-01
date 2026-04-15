@@ -239,3 +239,171 @@ describe('automation', () => {
     });
   });
 });
+
+// Feature: kitchenos, Property 3: Delivery Task Created on Order Ready
+// Feature: kitchenos, Property 4: Inventory Deduction Matches Ingredient Map
+// Feature: kitchenos, Property 5: Cleaning Task Created on Order Dispatch
+// Feature: kitchenos, Property 10: Restock Task Created When Inventory Below Reorder Point
+
+import fc from 'fast-check';
+
+describe('Automation Engine - Property Tests', () => {
+  describe('Property 3: Delivery Task Created on Order Ready', () => {
+    it('should create delivery task when order transitions to quality_check', () => {
+      fc.assert(
+        fc.property(
+          fc.record({
+            id: fc.uuid(),
+            tableNumber: fc.integer({ min: 1, max: 50 }),
+            items: fc.array(
+              fc.record({
+                name: fc.string({ minLength: 1 }).filter(s => s.trim().length > 0),
+                quantity: fc.integer({ min: 1, max: 10 }),
+                prepTime: fc.integer({ min: 1, max: 60 }),
+              }),
+              { minLength: 1, maxLength: 10 }
+            ),
+            status: fc.constant('cooking' as const),
+            priorityScore: fc.float({ min: 0, max: 100 }),
+            createdAt: fc.date().map(d => d.toISOString()),
+            startedAt: fc.date().map(d => d.toISOString()),
+            dispatchedAt: fc.constant(null),
+            countdownTimer: fc.integer({ min: 0, max: 3600 }),
+          }),
+          async (order) => {
+            vi.clearAllMocks();
+            await executeTransitionSideEffects(order, 'quality_check');
+            
+            // Check that delivery task creation was logged
+            const calls = (console.log as any).mock.calls;
+            const logOutput = calls.map((call: any[]) => (call[0] || '').toString()).join(' ');
+            const hasDeliveryTask = logOutput.toLowerCase().includes('delivery') &&
+                                   logOutput.includes(order.id);
+            
+            return hasDeliveryTask;
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+  });
+
+  describe('Property 5: Cleaning Task Created on Order Dispatch', () => {
+    it('should create cleaning task when order transitions to dispatched', () => {
+      fc.assert(
+        fc.property(
+          fc.record({
+            id: fc.uuid(),
+            tableNumber: fc.integer({ min: 1, max: 50 }),
+            items: fc.array(
+              fc.record({
+                name: fc.constantFrom('Margherita Pizza', 'Caesar Salad', 'Grilled Chicken'),
+                quantity: fc.integer({ min: 1, max: 5 }),
+                prepTime: fc.integer({ min: 1, max: 60 }),
+              }),
+              { minLength: 1, maxLength: 5 }
+            ),
+            status: fc.constant('ready' as const),
+            priorityScore: fc.float({ min: 0, max: 100 }),
+            createdAt: fc.date().map(d => d.toISOString()),
+            startedAt: fc.date().map(d => d.toISOString()),
+            dispatchedAt: fc.constant(null),
+            countdownTimer: fc.constant(0),
+          }),
+          async (order) => {
+            vi.clearAllMocks();
+            await executeTransitionSideEffects(order, 'dispatched');
+            
+            // Check that cleaning task creation was logged
+            const calls = (console.log as any).mock.calls;
+            const logOutput = calls.map((call: any[]) => (call[0] || '').toString()).join(' ');
+            const hasCleaningTask = logOutput.toLowerCase().includes('cleaning') &&
+                                   logOutput.includes(order.tableNumber.toString());
+            
+            return hasCleaningTask;
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+  });
+
+  describe('Property 4: Inventory Deduction Matches Ingredient Map', () => {
+    it('should decrement inventory according to ingredient map', () => {
+      fc.assert(
+        fc.property(
+          fc.array(
+            fc.record({
+              name: fc.constantFrom('Margherita Pizza', 'Caesar Salad', 'Grilled Chicken'),
+              quantity: fc.integer({ min: 1, max: 5 }),
+              prepTime: fc.integer({ min: 1, max: 60 }),
+            }),
+            { minLength: 1, maxLength: 5 }
+          ),
+          async (items) => {
+            vi.clearAllMocks();
+            await decrementInventory(items);
+            
+            // Check that inventory deduction was logged for each item
+            const calls = (console.log as any).mock.calls;
+            const logOutput = calls.map((call: any[]) => (call[0] || '').toString()).join(' ');
+            
+            // For each item, verify that its ingredients were decremented
+            for (const item of items) {
+              if (item.name === 'Margherita Pizza') {
+                if (!logOutput.includes('flour') || !logOutput.includes('tomato-sauce') || !logOutput.includes('mozzarella')) {
+                  return false;
+                }
+              } else if (item.name === 'Caesar Salad') {
+                if (!logOutput.includes('romaine-lettuce') || !logOutput.includes('parmesan') || !logOutput.includes('caesar-dressing')) {
+                  return false;
+                }
+              } else if (item.name === 'Grilled Chicken') {
+                if (!logOutput.includes('chicken-breast') || !logOutput.includes('olive-oil')) {
+                  return false;
+                }
+              }
+            }
+            
+            return true;
+          }
+        ),
+        { numRuns: 50 }
+      );
+    });
+  });
+
+  describe('Property 10: Restock Task Created When Inventory Below Reorder Point', () => {
+    it('should create restock task when stock level falls below reorder point', () => {
+      fc.assert(
+        fc.property(
+          fc.record({
+            id: fc.uuid(),
+            itemName: fc.string({ minLength: 2, maxLength: 50 }).filter(s => s.trim().length > 1),
+            stockLevel: fc.integer({ min: 0, max: 100 }),
+            reorderPoint: fc.integer({ min: 1, max: 100 }),
+            unit: fc.constantFrom('kg', 'L', '%', 'units'),
+          }),
+          async (inventory) => {
+            // Only test when stock is below reorder point
+            if (inventory.stockLevel >= inventory.reorderPoint) {
+              return true; // Skip this case
+            }
+
+            vi.clearAllMocks();
+            await createRestockTask(inventory);
+            
+            // Check that restock task creation was logged
+            const calls = (console.log as any).mock.calls;
+            const logOutput = calls.map((call: any[]) => (call[0] || '').toString()).join(' ');
+            const hasRestockTask = logOutput.toLowerCase().includes('restock') &&
+                                   logOutput.includes(inventory.itemName);
+            
+            return hasRestockTask;
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+  });
+});

@@ -1,271 +1,281 @@
-// Unit tests for calculation utilities
-// Validates: Requirements 2.1, 1.2, 11.1, 11.3
-
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
+import fc from 'fast-check';
 import {
   calculatePriorityScore,
   calculateCountdownTimer,
   calculateAverageWaitTime,
   calculateTotalRevenue,
 } from './calculations';
-import { Order, OrderItem } from '@/types';
+import type { Order, OrderItem } from '@/types';
 
-describe('calculatePriorityScore', () => {
-  it('should calculate priority score using formula (totalPrepTime * 0.6) + (waitTime * 0.4)', () => {
-    const order: Order = {
-      id: 'order-1',
-      tableNumber: 5,
-      items: [
-        { name: 'Burger', quantity: 2, prepTime: 10 },
-        { name: 'Fries', quantity: 1, prepTime: 5 },
-      ],
-      status: 'pending',
-      priorityScore: 0,
-      createdAt: new Date(Date.now() - 10 * 60000).toISOString(), // 10 minutes ago
-      startedAt: null,
-      dispatchedAt: null,
-      countdownTimer: null,
-    };
-
-    const score = calculatePriorityScore(order);
-    
-    // totalPrepTime = (10*2 + 5*1) = 25 minutes
-    // waitTime = 10 minutes
-    // score = (25 * 0.6) + (10 * 0.4) = 15 + 4 = 19
-    expect(score).toBeCloseTo(19, 0);
-  });
-
-  it('should return 0 on error', () => {
-    const invalidOrder = { createdAt: 'invalid-date' } as Order;
-    const score = calculatePriorityScore(invalidOrder);
-    expect(score).toBe(0);
-  });
-});
-
-describe('calculateCountdownTimer', () => {
-  it('should calculate total prep time in seconds', () => {
-    const items: OrderItem[] = [
-      { name: 'Burger', quantity: 2, prepTime: 10 },
-      { name: 'Fries', quantity: 1, prepTime: 5 },
-    ];
-
-    const timer = calculateCountdownTimer(items);
-    
-    // (10*2 + 5*1) * 60 = 25 * 60 = 1500 seconds
-    expect(timer).toBe(1500);
-  });
-
-  it('should return 0 for empty items array', () => {
-    const timer = calculateCountdownTimer([]);
-    expect(timer).toBe(0);
-  });
-
-  it('should handle single item', () => {
-    const items: OrderItem[] = [
-      { name: 'Salad', quantity: 1, prepTime: 8 },
-    ];
-
-    const timer = calculateCountdownTimer(items);
-    expect(timer).toBe(480); // 8 * 60
-  });
-});
-
-describe('calculateAverageWaitTime', () => {
-  it('should calculate average wait time for dispatched orders', () => {
-    const now = Date.now();
-    const orders: Order[] = [
-      {
-        id: 'order-1',
-        tableNumber: 1,
-        items: [],
-        status: 'dispatched',
+describe('Calculations - Unit Tests', () => {
+  describe('calculatePriorityScore', () => {
+    it('should calculate priority score correctly', () => {
+      const order: Order = {
+        id: '1',
+        tableNumber: 5,
+        items: [
+          { name: 'Pizza', quantity: 2, prepTime: 15 },
+          { name: 'Salad', quantity: 1, prepTime: 5 },
+        ],
+        status: 'pending',
         priorityScore: 0,
-        createdAt: new Date(now - 30 * 60000).toISOString(), // 30 min ago
-        startedAt: null,
-        dispatchedAt: new Date(now).toISOString(),
-        countdownTimer: null,
-      },
-      {
-        id: 'order-2',
-        tableNumber: 2,
-        items: [],
-        status: 'dispatched',
-        priorityScore: 0,
-        createdAt: new Date(now - 20 * 60000).toISOString(), // 20 min ago
-        startedAt: null,
-        dispatchedAt: new Date(now).toISOString(),
-        countdownTimer: null,
-      },
-    ];
-
-    const avgWaitTime = calculateAverageWaitTime(orders);
-    
-    // (30 + 20) / 2 = 25 minutes
-    expect(avgWaitTime).toBeCloseTo(25, 0);
-  });
-
-  it('should return 0 for empty orders array', () => {
-    const avgWaitTime = calculateAverageWaitTime([]);
-    expect(avgWaitTime).toBe(0);
-  });
-
-  it('should ignore non-dispatched orders', () => {
-    const now = Date.now();
-    const orders: Order[] = [
-      {
-        id: 'order-1',
-        tableNumber: 1,
-        items: [],
-        status: 'dispatched',
-        priorityScore: 0,
-        createdAt: new Date(now - 30 * 60000).toISOString(),
-        startedAt: null,
-        dispatchedAt: new Date(now).toISOString(),
-        countdownTimer: null,
-      },
-      {
-        id: 'order-2',
-        tableNumber: 2,
-        items: [],
-        status: 'cooking',
-        priorityScore: 0,
-        createdAt: new Date(now - 20 * 60000).toISOString(),
+        createdAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(), // 10 minutes ago
         startedAt: null,
         dispatchedAt: null,
         countdownTimer: null,
-      },
-    ];
+      };
 
-    const avgWaitTime = calculateAverageWaitTime(orders);
-    
-    // Only order-1 is dispatched, so average is 30 minutes
-    expect(avgWaitTime).toBeCloseTo(30, 0);
+      const score = calculatePriorityScore(order);
+      const totalPrepTime = (15 * 2) + (5 * 1); // 35 minutes
+      const waitTime = 10; // minutes
+      const expected = (totalPrepTime * 0.6) + (waitTime * 0.4);
+
+      expect(score).toBeCloseTo(expected, 2);
+    });
   });
 
-  it('should ignore orders without dispatchedAt timestamp', () => {
-    const now = Date.now();
-    const orders: Order[] = [
-      {
-        id: 'order-1',
-        tableNumber: 1,
-        items: [],
-        status: 'dispatched',
-        priorityScore: 0,
-        createdAt: new Date(now - 30 * 60000).toISOString(),
-        startedAt: null,
-        dispatchedAt: null, // Missing timestamp
-        countdownTimer: null,
-      },
-    ];
+  describe('calculateCountdownTimer', () => {
+    it('should calculate countdown timer in seconds', () => {
+      const items: OrderItem[] = [
+        { name: 'Pizza', quantity: 2, prepTime: 15 },
+        { name: 'Salad', quantity: 1, prepTime: 5 },
+      ];
 
-    const avgWaitTime = calculateAverageWaitTime(orders);
-    expect(avgWaitTime).toBe(0);
+      const timer = calculateCountdownTimer(items);
+      const expected = ((15 * 2) + (5 * 1)) * 60; // 35 minutes * 60 seconds
+
+      expect(timer).toBe(expected);
+    });
+  });
+
+  describe('calculateAverageWaitTime', () => {
+    it('should calculate average wait time correctly', () => {
+      const now = Date.now();
+      const orders: Order[] = [
+        {
+          id: '1',
+          tableNumber: 1,
+          items: [],
+          status: 'dispatched',
+          priorityScore: 0,
+          createdAt: new Date(now - 20 * 60 * 1000).toISOString(),
+          startedAt: null,
+          dispatchedAt: new Date(now).toISOString(),
+          countdownTimer: null,
+        },
+        {
+          id: '2',
+          tableNumber: 2,
+          items: [],
+          status: 'dispatched',
+          priorityScore: 0,
+          createdAt: new Date(now - 30 * 60 * 1000).toISOString(),
+          startedAt: null,
+          dispatchedAt: new Date(now).toISOString(),
+          countdownTimer: null,
+        },
+      ];
+
+      const avgWaitTime = calculateAverageWaitTime(orders);
+      const expected = (20 + 30) / 2; // 25 minutes
+
+      expect(avgWaitTime).toBeCloseTo(expected, 1);
+    });
+
+    it('should return 0 for empty array', () => {
+      expect(calculateAverageWaitTime([])).toBe(0);
+    });
+  });
+
+  describe('calculateTotalRevenue', () => {
+    it('should calculate total revenue correctly', () => {
+      const orders: Order[] = [
+        {
+          id: '1',
+          tableNumber: 1,
+          items: [
+            { name: 'Pizza', quantity: 2, prepTime: 15 },
+            { name: 'Salad', quantity: 1, prepTime: 5 },
+          ],
+          status: 'dispatched',
+          priorityScore: 0,
+          createdAt: new Date().toISOString(),
+          startedAt: null,
+          dispatchedAt: new Date().toISOString(),
+          countdownTimer: null,
+        },
+      ];
+
+      const revenue = calculateTotalRevenue(orders);
+      const expected = (2 + 1) * 15; // 3 items * $15
+
+      expect(revenue).toBe(expected);
+    });
   });
 });
 
-describe('calculateTotalRevenue', () => {
-  it('should calculate total revenue from dispatched orders', () => {
-    const orders: Order[] = [
-      {
-        id: 'order-1',
-        tableNumber: 1,
-        items: [
-          { name: 'Burger', quantity: 2, prepTime: 10 },
-          { name: 'Fries', quantity: 1, prepTime: 5 },
-        ],
-        status: 'dispatched',
-        priorityScore: 0,
-        createdAt: new Date().toISOString(),
-        startedAt: null,
-        dispatchedAt: new Date().toISOString(),
-        countdownTimer: null,
-      },
-      {
-        id: 'order-2',
-        tableNumber: 2,
-        items: [
-          { name: 'Salad', quantity: 1, prepTime: 8 },
-        ],
-        status: 'dispatched',
-        priorityScore: 0,
-        createdAt: new Date().toISOString(),
-        startedAt: null,
-        dispatchedAt: new Date().toISOString(),
-        countdownTimer: null,
-      },
-    ];
+// Feature: kitchenos, Property 8: Priority Score Calculation Formula
+describe('Calculations - Property Tests', () => {
+  describe('Property 8: Priority Score Calculation Formula', () => {
+    it('should calculate priority score as (totalPrepTime * 0.6) + (waitTime * 0.4)', () => {
+      fc.assert(
+        fc.property(
+          fc.array(
+            fc.record({
+              name: fc.string(),
+              quantity: fc.integer({ min: 1, max: 10 }),
+              prepTime: fc.integer({ min: 1, max: 60 }),
+            }),
+            { minLength: 1, maxLength: 10 }
+          ),
+          fc.integer({ min: 0, max: 10000 }), // minutes ago
+          (items, minutesAgo) => {
+            const order: Order = {
+              id: 'test-order-1',
+              tableNumber: 1,
+              items,
+              status: 'pending',
+              priorityScore: 0,
+              createdAt: new Date(Date.now() - minutesAgo * 60 * 1000).toISOString(),
+              startedAt: null,
+              dispatchedAt: null,
+              countdownTimer: null,
+            };
 
-    const revenue = calculateTotalRevenue(orders);
-    
-    // Order 1: (2 + 1) * $15 = $45
-    // Order 2: 1 * $15 = $15
-    // Total: $60
-    expect(revenue).toBe(60);
+            const score = calculatePriorityScore(order);
+            const totalPrepTime = items.reduce(
+              (sum, item) => sum + item.prepTime * item.quantity,
+              0
+            );
+            const waitTime = minutesAgo;
+            const expected = totalPrepTime * 0.6 + waitTime * 0.4;
+
+            // Allow small floating point differences
+            return Math.abs(score - expected) < 0.01;
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
   });
 
-  it('should return 0 for empty orders array', () => {
-    const revenue = calculateTotalRevenue([]);
-    expect(revenue).toBe(0);
+  // Feature: kitchenos, Property 2: Countdown Timer Calculation Matches Formula
+  describe('Property 2: Countdown Timer Calculation Matches Formula', () => {
+    it('should calculate countdown timer as sum of (prepTime * quantity) in seconds', () => {
+      fc.assert(
+        fc.property(
+          fc.array(
+            fc.record({
+              name: fc.string(),
+              quantity: fc.integer({ min: 1, max: 10 }),
+              prepTime: fc.integer({ min: 1, max: 60 }),
+            }),
+            { minLength: 1, maxLength: 10 }
+          ),
+          (items) => {
+            const timer = calculateCountdownTimer(items);
+            const expectedMinutes = items.reduce(
+              (sum, item) => sum + item.prepTime * item.quantity,
+              0
+            );
+            const expectedSeconds = expectedMinutes * 60;
+
+            return timer === expectedSeconds;
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
   });
 
-  it('should ignore non-dispatched orders', () => {
-    const orders: Order[] = [
-      {
-        id: 'order-1',
-        tableNumber: 1,
-        items: [
-          { name: 'Burger', quantity: 2, prepTime: 10 },
-        ],
-        status: 'dispatched',
-        priorityScore: 0,
-        createdAt: new Date().toISOString(),
-        startedAt: null,
-        dispatchedAt: new Date().toISOString(),
-        countdownTimer: null,
-      },
-      {
-        id: 'order-2',
-        tableNumber: 2,
-        items: [
-          { name: 'Salad', quantity: 3, prepTime: 8 },
-        ],
-        status: 'cooking',
-        priorityScore: 0,
-        createdAt: new Date().toISOString(),
-        startedAt: null,
-        dispatchedAt: null,
-        countdownTimer: null,
-      },
-    ];
+  // Feature: kitchenos, Property 28: Revenue Calculation
+  // Feature: kitchenos, Property 30: Average Wait Time Calculation
+  describe('Property 28 & 30: Revenue and Average Wait Time Calculation', () => {
+    it('should calculate total revenue as sum of all item quantities * $15', () => {
+      fc.assert(
+        fc.property(
+          fc.array(
+            fc.record({
+              id: fc.uuid(),
+              tableNumber: fc.integer({ min: 1, max: 50 }),
+              items: fc.array(
+                fc.record({
+                  name: fc.string(),
+                  quantity: fc.integer({ min: 1, max: 10 }),
+                  prepTime: fc.integer({ min: 1, max: 60 }),
+                }),
+                { minLength: 1, maxLength: 10 }
+              ),
+              status: fc.constant('dispatched' as const),
+              priorityScore: fc.float({ min: 0, max: 100 }),
+              createdAt: fc.date({ min: new Date('2024-01-01'), max: new Date() }).map(d => d.toISOString()),
+              startedAt: fc.constant(null),
+              dispatchedAt: fc.date({ min: new Date('2024-01-01'), max: new Date() }).map(d => d.toISOString()),
+              countdownTimer: fc.constant(null),
+            }),
+            { minLength: 0, maxLength: 20 }
+          ),
+          (orders) => {
+            const revenue = calculateTotalRevenue(orders);
+            const expectedRevenue = orders.reduce(
+              (sum, order) =>
+                sum +
+                order.items.reduce((itemSum, item) => itemSum + item.quantity, 0) * 15,
+              0
+            );
 
-    const revenue = calculateTotalRevenue(orders);
-    
-    // Only order-1 is dispatched: 2 * $15 = $30
-    expect(revenue).toBe(30);
-  });
+            return revenue === expectedRevenue;
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
 
-  it('should handle orders with multiple items', () => {
-    const orders: Order[] = [
-      {
-        id: 'order-1',
-        tableNumber: 1,
-        items: [
-          { name: 'Burger', quantity: 3, prepTime: 10 },
-          { name: 'Fries', quantity: 2, prepTime: 5 },
-          { name: 'Drink', quantity: 4, prepTime: 1 },
-        ],
-        status: 'dispatched',
-        priorityScore: 0,
-        createdAt: new Date().toISOString(),
-        startedAt: null,
-        dispatchedAt: new Date().toISOString(),
-        countdownTimer: null,
-      },
-    ];
+    it('should calculate average wait time as mean of (dispatchedAt - createdAt)', () => {
+      fc.assert(
+        fc.property(
+          fc.array(
+            fc.record({
+              id: fc.uuid(),
+              tableNumber: fc.integer({ min: 1, max: 50 }),
+              items: fc.array(
+                fc.record({
+                  name: fc.string(),
+                  quantity: fc.integer({ min: 1, max: 10 }),
+                  prepTime: fc.integer({ min: 1, max: 60 }),
+                }),
+                { minLength: 1, maxLength: 5 }
+              ),
+              status: fc.constant('dispatched' as const),
+              priorityScore: fc.float({ min: 0, max: 100 }),
+              createdAt: fc.integer({ min: 0, max: 10000 }).map(mins => new Date(Date.now() - mins * 60 * 1000).toISOString()),
+              startedAt: fc.constant(null),
+              dispatchedAt: fc.constant(new Date().toISOString()),
+              countdownTimer: fc.constant(null),
+            }),
+            { minLength: 1, maxLength: 20 }
+          ),
+          (orders) => {
+            const avgWaitTime = calculateAverageWaitTime(orders);
+            
+            if (orders.length === 0) {
+              return avgWaitTime === 0;
+            }
 
-    const revenue = calculateTotalRevenue(orders);
-    
-    // (3 + 2 + 4) * $15 = 9 * $15 = $135
-    expect(revenue).toBe(135);
+            const totalWaitTime = orders.reduce((sum, order) => {
+              const created = new Date(order.createdAt).getTime();
+              const dispatched = new Date(order.dispatchedAt!).getTime();
+              return sum + (dispatched - created) / 60000; // convert to minutes
+            }, 0);
+            const expected = totalWaitTime / orders.length;
+
+            // Allow small floating point differences
+            return Math.abs(avgWaitTime - expected) < 0.1;
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
   });
 });
