@@ -34,7 +34,7 @@ The implementation follows a bottom-up approach: establishing project infrastruc
   - **Property 16: Order Card Rendering Includes All Required Fields**
   - **Validates: Requirements 5.2**
 
-- [ ] 4. Implement state machine core logic
+- [x] 4. Implement state machine core logic
   - [x] 4.1 Create `src/lib/stateMachine.ts` with state transition validation
     - Implement `ORDER_STATE_MACHINE` constant defining valid transitions
     - Implement `canTransition(from: OrderStatus, to: OrderStatus): boolean` function
@@ -49,98 +49,98 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 6: Invalid State Transitions Rejected**
     - **Validates: Requirements 1.6**
 
-- [ ] 5. Implement calculation utilities
-  - [~] 5.1 Create `src/lib/calculations.ts` with priority score and metrics calculations
+- [x] 5. Implement calculation utilities
+  - [x] 5.1 Create `src/lib/calculations.ts` with priority score and metrics calculations
     - Implement `calculatePriorityScore(order: Order): number` function
     - Implement `calculateCountdownTimer(items: OrderItem[]): number` function
     - Implement `calculateAverageWaitTime(orders: Order[]): number` function
     - Implement `calculateTotalRevenue(orders: Order[]): number` function
     - _Requirements: 2.1, 1.2, 11.1, 11.3_
   
-  - [ ] 5.2 Write property test for priority score calculation
+  - [x] 5.2 Write property test for priority score calculation
     - **Property 8: Priority Score Calculation Formula**
     - **Validates: Requirements 2.1**
   
-  - [ ] 5.3 Write property test for countdown timer calculation
+  - [x] 5.3 Write property test for countdown timer calculation
     - **Property 2: Countdown Timer Calculation Matches Formula**
     - **Validates: Requirements 1.2**
   
-  - [ ] 5.4 Write property test for metrics calculations
+  - [x] 5.4 Write property test for metrics calculations
     - **Property 28: Revenue Calculation**
     - **Property 30: Average Wait Time Calculation**
     - **Validates: Requirements 11.1, 11.3**
 
-- [ ] 6. Implement automation engine
-  - [~] 6.1 Create `src/lib/automation.ts` with side effect execution logic
+- [x] 6. Implement automation engine
+  - [x] 6.1 Create `src/lib/automation.ts` with side effect execution logic
     - Implement `executeTransitionSideEffects(order: Order, newStatus: OrderStatus): Promise<void>` function
     - Implement `decrementInventory(items: OrderItem[]): Promise<void>` function
     - Implement `createStaffTask(task: Omit<StaffTask, 'id' | 'createdAt'>): Promise<void>` function
     - Implement `createRestockTask(inventory: InventoryItem): Promise<void>` function
     - _Requirements: 1.3, 1.4, 1.5, 3.1, 4.1, 4.2, 4.3_
   
-  - [ ] 6.2 Write property test for delivery task creation
+  - [x] 6.2 Write property test for delivery task creation
     - **Property 3: Delivery Task Created on Order Ready**
     - **Validates: Requirements 1.3, 4.1**
   
-  - [ ] 6.3 Write property test for inventory deduction
+  - [x] 6.3 Write property test for inventory deduction
     - **Property 4: Inventory Deduction Matches Ingredient Map**
     - **Validates: Requirements 1.4, 3.1, 3.2**
   
-  - [ ] 6.4 Write property test for cleaning task creation
+  - [x] 6.4 Write property test for cleaning task creation
     - **Property 5: Cleaning Task Created on Order Dispatch**
     - **Validates: Requirements 1.5, 4.2**
   
-  - [ ] 6.5 Write property test for restock task creation
+  - [x] 6.5 Write property test for restock task creation
     - **Property 10: Restock Task Created When Inventory Below Reorder Point**
     - **Validates: Requirements 3.3, 4.3**
 
-- [~] 7. Create ingredient deduction map
+- [x] 7. Create ingredient deduction map
   - Create `src/lib/ingredientMap.ts` with hardcoded ingredient-to-inventory mapping
   - Define `INGREDIENT_DEDUCTION_MAP` constant with menu items and their ingredient deductions
   - Export `IngredientDeduction` interface
   - _Requirements: 3.2_
 
-- [ ] 8. Implement Supabase client wrapper
-  - [~] 8.1 Create `src/lib/supabase.ts` with Supabase client initialization
+- [x] 8. Implement Supabase client wrapper
+  - [x] 8.1 Create `src/lib/supabase.ts` with Supabase client initialization
     - Initialize Supabase client with environment variables
     - Implement typed query helpers: `fetchOrders()`, `updateOrderStatus()`, `fetchInventory()`, `updateInventoryStockLevel()`, `fetchStaffTasks()`, `createStaffTask()`, `fetchPipelineLogs()`, `createPipelineLog()`
     - Add error handling with fallback to mock data
     - _Requirements: 17.1, 17.5, 12.1, 12.2_
   
-  - [ ] 8.2 Write unit tests for Supabase error handling
+  - [x] 8.2 Write unit tests for Supabase error handling
     - Test fallback to mock data when Supabase is unavailable
     - Test error logging to pipeline_logs table
     - _Requirements: 12.2, 12.4_
 
-- [~] 9. Create mock data module
+- [x] 9. Create mock data module
   - Create `src/lib/mockData.ts` with comprehensive mock data sets
   - Define `mockOrders`, `mockInventory`, `mockStaffTasks`, `mockPipelineLogs` arrays
   - Ensure mock data covers all edge cases (low inventory, high priority orders, various task types)
   - _Requirements: 12.1_
 
-- [~] 10. Checkpoint - Ensure all tests pass
+- [ ] 10. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [~] 11. Implement Zustand store
+- [x] 11. Implement Zustand store
   - Create `src/store/index.ts` with global state management
   - Define `KitchenOSStore` interface with `manualOverrideMode`, `isOfflineMode`, `selectedModule` state
   - Implement actions: `setManualOverrideMode()`, `setOfflineMode()`, `setSelectedModule()`
   - _Requirements: 9.1, 12.3_
 
 - [ ] 12. Implement custom hooks for data fetching
-  - [~] 12.1 Create `src/hooks/useOrders.ts` for order CRUD operations
+  - [x] 12.1 Create `src/hooks/useOrders.ts` for order CRUD operations
     - Implement data fetching with Supabase or mock fallback
     - Implement `updateOrderStatus()`, `addOrder()`, `deleteOrder()` functions
     - Return loading, error, and data states
     - _Requirements: 1.1, 10.1_
   
-  - [~] 12.2 Create `src/hooks/useInventory.ts` for inventory management
+  - [x] 12.2 Create `src/hooks/useInventory.ts` for inventory management
     - Implement data fetching with Supabase or mock fallback
     - Implement `updateStockLevel()`, `addInventoryItem()` functions
     - Return loading, error, and data states
     - _Requirements: 3.1, 7.1_
   
-  - [~] 12.3 Create `src/hooks/useStaffTasks.ts` for task management
+  - [x] 12.3 Create `src/hooks/useStaffTasks.ts` for task management
     - Implement data fetching with Supabase or mock fallback
     - Implement `createTask()`, `updateTaskStatus()`, `assignTask()` functions
     - Implement round-robin assignment logic
@@ -151,13 +151,13 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 14: Round-Robin Task Assignment**
     - **Validates: Requirements 4.4**
   
-  - [~] 12.5 Create `src/hooks/usePipelineLogs.ts` for log management
+  - [x] 12.5 Create `src/hooks/usePipelineLogs.ts` for log management
     - Implement data fetching with Supabase or mock fallback
     - Implement `createLog()` function
     - Return loading, error, and data states
     - _Requirements: 1.7, 8.1_
   
-  - [~] 12.6 Create `src/hooks/useMetrics.ts` for derived metrics calculation
+  - [x] 12.6 Create `src/hooks/useMetrics.ts` for derived metrics calculation
     - Implement real-time calculation of revenue, active orders, average wait time, pending tasks
     - Use `useMemo` for expensive computations
     - _Requirements: 11.1, 11.2, 11.3, 11.4_
@@ -168,7 +168,7 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Validates: Requirements 11.2, 11.4**
 
 - [ ] 13. Implement real-time synchronization hook
-  - [~] 13.1 Create `src/hooks/useRealtime.ts` for Supabase Realtime subscriptions
+  - [x] 13.1 Create `src/hooks/useRealtime.ts` for Supabase Realtime subscriptions
     - Implement subscription setup with cleanup on unmount
     - Implement fallback to polling with `setInterval` when Realtime unavailable
     - Detect offline mode and update Zustand store
@@ -180,20 +180,20 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - _Requirements: 10.1, 10.3_
 
 - [ ] 14. Create UI primitive components
-  - [~] 14.1 Create `src/components/ui/Button.tsx`
+  - [x] 14.1 Create `src/components/ui/Button.tsx`
     - Implement button with variants (primary, secondary, danger)
     - Add hover states and accessibility attributes
     - _Requirements: 15.1, 15.2, 15.8_
   
-  - [~] 14.2 Create `src/components/ui/Card.tsx`
+  - [x] 14.2 Create `src/components/ui/Card.tsx`
     - Implement card surface with border styling from design system
     - _Requirements: 15.1, 15.6_
   
-  - [~] 14.3 Create `src/components/ui/Badge.tsx`
+  - [x] 14.3 Create `src/components/ui/Badge.tsx`
     - Implement badge with color variants (success, warning, danger, info)
     - _Requirements: 15.7_
   
-  - [~] 14.4 Create `src/components/ui/ProgressBar.tsx`
+  - [x] 14.4 Create `src/components/ui/ProgressBar.tsx`
     - Implement progress bar with color coding based on percentage thresholds
     - _Requirements: 7.2_
   
@@ -201,35 +201,35 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 21: Stock Level Color Coding**
     - **Validates: Requirements 7.2**
   
-  - [~] 14.6 Create `src/components/ui/SkeletonLoader.tsx`
+  - [x] 14.6 Create `src/components/ui/SkeletonLoader.tsx`
     - Implement skeleton loader for loading states
     - _Requirements: 12.5_
   
-  - [~] 14.7 Create `src/components/ui/ErrorBadge.tsx`
+  - [x] 14.7 Create `src/components/ui/ErrorBadge.tsx`
     - Implement inline error badge for error states
     - _Requirements: 12.6_
 
 - [ ] 15. Create layout components
-  - [~] 15.1 Create `src/components/layout/Sidebar.tsx`
+  - [x] 15.1 Create `src/components/layout/Sidebar.tsx`
     - Implement navigation links to all four modules
     - Highlight active module based on current route
     - _Requirements: 14.1, 14.2_
   
-  - [~] 15.2 Create `src/components/layout/TopBar.tsx`
+  - [x] 15.2 Create `src/components/layout/TopBar.tsx`
     - Display system status, current time, offline mode badge
     - Display manual override mode warning banner
     - _Requirements: 14.3, 9.5, 12.4_
   
-  - [~] 15.3 Create `src/components/layout/AppShell.tsx`
+  - [x] 15.3 Create `src/components/layout/AppShell.tsx`
     - Compose Sidebar, TopBar, and Outlet (page content area)
     - Apply consistent layout structure
     - _Requirements: 14.5_
 
-- [~] 16. Checkpoint - Ensure all tests pass
+- [ ] 16. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 17. Implement Command Center page components
-  - [~] 17.1 Create `src/components/command-center/MetricCard.tsx`
+  - [-] 17.1 Create `src/components/command-center/MetricCard.tsx`
     - Display metric label, value, and optional trend indicator
     - Format currency values with appropriate symbols
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.6_
@@ -238,12 +238,12 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 32: Currency Formatting**
     - **Validates: Requirements 11.6**
   
-  - [~] 17.3 Create `src/components/command-center/MetricsGrid.tsx`
+  - [-] 17.3 Create `src/components/command-center/MetricsGrid.tsx`
     - Compose four MetricCard components for revenue, active orders, avg wait time, pending tasks
     - Use `useMetrics()` hook for data
     - _Requirements: 11.1, 11.2, 11.3, 11.4_
   
-  - [~] 17.4 Create `src/components/command-center/LogEntry.tsx`
+  - [-] 17.4 Create `src/components/command-center/LogEntry.tsx`
     - Display timestamp, level badge, and message
     - Apply color coding based on log level (INFO/WARN/ERROR)
     - _Requirements: 8.2, 8.4_
@@ -252,7 +252,7 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 25: Log Level Color Coding**
     - **Validates: Requirements 8.4**
   
-  - [~] 17.6 Create `src/components/command-center/PipelineLogFeed.tsx`
+  - [-] 17.6 Create `src/components/command-center/PipelineLogFeed.tsx`
     - Display scrollable list of LogEntry components
     - Auto-scroll to newest entry when new log created
     - Sort entries in reverse chronological order
@@ -263,18 +263,18 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 26: Log Entries Sorted Reverse Chronologically**
     - **Validates: Requirements 8.7**
   
-  - [~] 17.8 Create `src/components/command-center/ManualOverrideToggle.tsx`
+  - [-] 17.8 Create `src/components/command-center/ManualOverrideToggle.tsx`
     - Implement toggle control for manual override mode
     - Update Zustand store when toggled
     - _Requirements: 9.1, 9.2, 9.3, 9.4_
   
-  - [~] 17.9 Create `src/pages/CommandCenter.tsx`
+  - [-] 17.9 Create `src/pages/CommandCenter.tsx`
     - Compose MetricsGrid, PipelineLogFeed, and ManualOverrideToggle
     - Apply page layout and styling
     - _Requirements: 11.1, 8.1, 9.1_
 
 - [ ] 18. Implement Kitchen Display System (KDS) page components
-  - [~] 18.1 Create `src/components/kds/OrderCard.tsx`
+  - [-] 18.1 Create `src/components/kds/OrderCard.tsx`
     - Display order number, table number, items list, priority score, elapsed time
     - Display countdown timer with warning indicator when < 20% remaining
     - Apply visual styling from design system
@@ -284,12 +284,12 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 17: Timer Warning Logic**
     - **Validates: Requirements 5.6**
   
-  - [~] 18.3 Create `src/components/kds/ColumnContainer.tsx`
+  - [-] 18.3 Create `src/components/kds/ColumnContainer.tsx`
     - Implement droppable column for kanban board using `@hello-pangea/dnd`
     - Display column title and order count
     - _Requirements: 5.1_
   
-  - [~] 18.4 Create `src/components/kds/KanbanBoard.tsx`
+  - [-] 18.4 Create `src/components/kds/KanbanBoard.tsx`
     - Implement drag-and-drop context with four columns (Pending, Cooking, Quality Check, Ready)
     - Handle `onDragEnd` callback to trigger state transitions
     - Validate transitions based on manual override mode
@@ -301,17 +301,17 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 9: Orders Sorted by Priority Score Descending**
     - **Validates: Requirements 2.3**
   
-  - [~] 18.6 Create `src/pages/KitchenDisplay.tsx`
+  - [-] 18.6 Create `src/pages/KitchenDisplay.tsx`
     - Compose KanbanBoard component
     - Apply page layout and styling
     - _Requirements: 5.1_
 
 - [ ] 19. Implement AI Hub page components
-  - [~] 19.1 Create `src/components/ai-hub/InventoryProgressBar.tsx`
+  - [ ] 19.1 Create `src/components/ai-hub/InventoryProgressBar.tsx`
     - Display stock level as progress bar with color coding
     - _Requirements: 7.2_
   
-  - [~] 19.2 Create `src/components/ai-hub/InventoryItem.tsx`
+  - [ ] 19.2 Create `src/components/ai-hub/InventoryItem.tsx`
     - Display item name, stock level, unit, and warning badge if below reorder point
     - Use InventoryProgressBar component
     - _Requirements: 7.1, 7.3_
@@ -320,12 +320,12 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 22: Warning Badge When Below Reorder Point**
     - **Validates: Requirements 7.3**
   
-  - [~] 19.4 Create `src/components/ai-hub/InventoryList.tsx`
+  - [ ] 19.4 Create `src/components/ai-hub/InventoryList.tsx`
     - Display list of InventoryItem components
     - Use `useInventory()` hook for data
     - _Requirements: 7.1_
   
-  - [~] 19.5 Create `src/components/ai-hub/StockAlerts.tsx`
+  - [ ] 19.5 Create `src/components/ai-hub/StockAlerts.tsx`
     - Display "At Risk Items" list filtered by items below reorder point
     - _Requirements: 7.4_
   
@@ -333,7 +333,7 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 23: At-Risk Items Filtering**
     - **Validates: Requirements 7.4**
   
-  - [~] 19.7 Create `src/components/ai-hub/DemandChart.tsx`
+  - [ ] 19.7 Create `src/components/ai-hub/DemandChart.tsx`
     - Implement line chart using Recharts showing projected vs actual demand by hour
     - Highlight hours where actual > projected × 1.2
     - Calculate projected demand from historical data
@@ -346,20 +346,20 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 20: Demand Highlighting Logic**
     - **Validates: Requirements 6.2, 6.3, 6.4**
   
-  - [~] 19.9 Create `src/pages/AIHub.tsx`
+  - [ ] 19.9 Create `src/pages/AIHub.tsx`
     - Compose DemandChart, InventoryList, and StockAlerts components
     - Apply page layout and styling
     - _Requirements: 6.1, 7.1_
 
-- [~] 20. Checkpoint - Ensure all tests pass
+- [ ] 20. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 21. Implement Staff Dispatch page components
-  - [~] 21.1 Create `src/components/staff-dispatch/TaskStatusBadge.tsx`
+  - [-] 21.1 Create `src/components/staff-dispatch/TaskStatusBadge.tsx`
     - Display task status with color coding (pending, in_progress, completed)
     - _Requirements: 4.1_
   
-  - [~] 21.2 Create `src/components/staff-dispatch/TaskCard.tsx`
+  - [-] 21.2 Create `src/components/staff-dispatch/TaskCard.tsx`
     - Display task type, description, assigned staff, status badge, priority
     - Apply visual styling from design system
     - _Requirements: 4.1_
@@ -368,29 +368,29 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 15: Task Priority Based on Type**
     - **Validates: Requirements 4.5**
   
-  - [~] 21.4 Create `src/components/staff-dispatch/TaskFilters.tsx`
+  - [-] 21.4 Create `src/components/staff-dispatch/TaskFilters.tsx`
     - Implement filter controls for task status and priority
     - _Requirements: 4.1_
   
-  - [~] 21.5 Create `src/components/staff-dispatch/TaskList.tsx`
+  - [-] 21.5 Create `src/components/staff-dispatch/TaskList.tsx`
     - Display list of TaskCard components sorted by priority
     - Apply filters from TaskFilters component
     - Use `useStaffTasks()` hook for data
     - _Requirements: 4.1_
   
-  - [~] 21.6 Create `src/pages/StaffDispatch.tsx`
+  - [x] 21.6 Create `src/pages/StaffDispatch.tsx`
     - Compose TaskFilters and TaskList components
     - Apply page layout and styling
     - _Requirements: 4.1_
 
-- [~] 22. Implement routing and navigation
+- [ ] 22. Implement routing and navigation
   - Create `src/App.tsx` with React Router configuration
   - Define routes: `/` (redirect to `/command-center`), `/command-center`, `/kitchen`, `/ai-hub`, `/staff`, `*` (redirect to `/command-center`)
   - Wrap all routes in AppShell layout
   - _Requirements: 14.4, 14.7_
 
 - [ ] 23. Implement logging for all state transitions and automation
-  - [~] 23.1 Add pipeline log creation to all state transition functions
+  - [ ] 23.1 Add pipeline log creation to all state transition functions
     - Log order status changes with INFO level
     - Log manual override actions with WARN level
     - Log errors with ERROR level
@@ -405,7 +405,7 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Validates: Requirements 9.7**
 
 - [ ] 24. Implement idempotency for automation actions
-  - [~] 24.1 Add duplicate prevention logic to task creation functions
+  - [ ] 24.1 Add duplicate prevention logic to task creation functions
     - Check for existing tasks before creating new ones
     - Use unique identifiers (order ID, inventory item ID) to prevent duplicates
     - _Requirements: 3.4, 4.7_
@@ -414,7 +414,7 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 11: Task Creation Idempotency**
     - **Validates: Requirements 3.4, 4.7**
   
-  - [~] 24.3 Add duplicate prevention logic to inventory deduction
+  - [ ] 24.3 Add duplicate prevention logic to inventory deduction
     - Track dispatched orders to prevent double deduction
     - _Requirements: 3.7_
   
@@ -422,7 +422,7 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Property 13: Inventory Deduction Idempotency**
     - **Validates: Requirements 3.7**
 
-- [~] 25. Implement stock level bounds checking
+- [ ] 25. Implement stock level bounds checking
   - Add validation to prevent negative stock levels
   - Clamp stock level to 0% when deduction would result in negative value
   - Log warning when stock level reaches 0%
@@ -432,46 +432,46 @@ The implementation follows a bottom-up approach: establishing project infrastruc
   - **Property 12: Stock Level Clamped to Zero**
   - **Validates: Requirements 3.6**
 
-- [~] 26. Checkpoint - Ensure all tests pass
+- [ ] 26. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 27. Set up Supabase database schema
-  - [~] 27.1 Create SQL migration file for orders table
+  - [ ] 27.1 Create SQL migration file for orders table
     - Define schema with all columns: id, table_number, items (JSONB), status, priority_score, countdown_timer, created_at, started_at, dispatched_at
     - Add indexes for status, priority_score, created_at
     - _Requirements: 17.1_
   
-  - [~] 27.2 Create SQL migration file for inventory table
+  - [ ] 27.2 Create SQL migration file for inventory table
     - Define schema with all columns: id, item_name, stock_level, reorder_point, unit
     - Add index for stock_level
     - _Requirements: 17.2_
   
-  - [~] 27.3 Create SQL migration file for staff_tasks table
+  - [ ] 27.3 Create SQL migration file for staff_tasks table
     - Define schema with all columns: id, task_type, description, assigned_to, status, priority, created_at
     - Add indexes for status, priority
     - _Requirements: 17.3_
   
-  - [~] 27.4 Create SQL migration file for pipeline_logs table
+  - [ ] 27.4 Create SQL migration file for pipeline_logs table
     - Define schema with all columns: id, timestamp, level, message
     - Add indexes for timestamp, level
     - _Requirements: 17.4_
   
-  - [~] 27.5 Create SQL migration file for Row Level Security policies
+  - [ ] 27.5 Create SQL migration file for Row Level Security policies
     - Enable RLS on all tables
     - Create policies allowing all operations for authenticated users
     - _Requirements: 17.5_
   
-  - [~] 27.6 Create SQL migration file for Realtime publication
+  - [ ] 27.6 Create SQL migration file for Realtime publication
     - Add all tables to supabase_realtime publication
     - _Requirements: 17.6_
 
-- [~] 28. Implement priority score recalculation
+- [ ] 28. Implement priority score recalculation
   - Create background task to recalculate priority scores every 30 seconds for pending orders
   - Use `setInterval` in `useOrders()` hook
   - Clear interval on component unmount
   - _Requirements: 2.2, 2.6_
 
-- [~] 29. Implement current day data filtering
+- [ ] 29. Implement current day data filtering
   - Add utility function to filter orders by current operational day
   - Apply filter to metrics calculations
   - _Requirements: 11.7_
@@ -481,13 +481,13 @@ The implementation follows a bottom-up approach: establishing project infrastruc
   - **Validates: Requirements 11.7**
 
 - [ ] 30. Implement error handling and logging
-  - [~] 30.1 Wrap all async operations in try-catch blocks
+  - [ ] 30.1 Wrap all async operations in try-catch blocks
     - Add error handling to all Supabase queries
     - Add error handling to all state transitions
     - Add error handling to all automation functions
     - _Requirements: 12.7_
   
-  - [~] 30.2 Implement error logging to console and pipeline_logs
+  - [ ] 30.2 Implement error logging to console and pipeline_logs
     - Use consistent error format: `[KitchenOS][ModuleName]`
     - Log all errors to pipeline_logs table with ERROR level
     - _Requirements: 12.4_
@@ -497,23 +497,23 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - **Validates: Requirements 12.4**
 
 - [ ] 31. Implement performance optimizations
-  - [~] 31.1 Add React.memo to all list item components
+  - [ ] 31.1 Add React.memo to all list item components
     - Wrap OrderCard, InventoryItem, TaskCard, LogEntry in React.memo
     - _Requirements: 16.2_
   
-  - [~] 31.2 Add useCallback to all callback props
+  - [ ] 31.2 Add useCallback to all callback props
     - Wrap event handlers passed as props in useCallback
     - _Requirements: 16.3_
   
-  - [~] 31.3 Add useMemo to expensive computations
+  - [ ] 31.3 Add useMemo to expensive computations
     - Wrap priority sorting, demand calculations, metrics calculations in useMemo
     - _Requirements: 16.4_
 
-- [~] 32. Checkpoint - Ensure all tests pass
+- [ ] 32. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 33. Write comprehensive test suite
-  - [~] 33.1 Create property tests for all business logic
+  - [ ] 33.1 Create property tests for all business logic
     - Create `tests/properties/stateMachine.property.test.ts`
     - Create `tests/properties/calculations.property.test.ts`
     - Create `tests/properties/automation.property.test.ts`
@@ -522,42 +522,42 @@ The implementation follows a bottom-up approach: establishing project infrastruc
     - Ensure all 34 correctness properties are tested
     - _Requirements: All requirements_
   
-  - [~] 33.2 Create unit tests for components
+  - [ ] 33.2 Create unit tests for components
     - Test component rendering with various props
     - Test error states and loading states
     - Test user interactions (clicks, drags, form submissions)
     - _Requirements: All requirements_
   
-  - [~] 33.3 Create integration tests
+  - [ ] 33.3 Create integration tests
     - Test end-to-end order pipeline flow
     - Test Supabase CRUD operations
     - Test real-time synchronization
     - _Requirements: 1.1, 10.1_
 
 - [ ] 34. Build and deployment preparation
-  - [~] 34.1 Configure production build settings
+  - [ ] 34.1 Configure production build settings
     - Verify `nextjs.config.ts` has code splitting and minification enabled
     - Verify source maps are disabled in production
     - _Requirements: 19.1, 19.6_
   
-  - [~] 34.2 Create `vercel.json` configuration file
+  - [ ] 34.2 Create `vercel.json` configuration file
     - Configure build command, output directory, framework
     - Configure environment variable references
     - _Requirements: 19.2, 19.3_
   
-  - [~] 34.3 Test production build locally
+  - [ ] 34.3 Test production build locally
     - Run `npm run build` and verify zero errors
     - Run `npm run preview` and test all pages
     - Verify bundle size is < 500KB gzipped
     - _Requirements: 19.1, 16.6_
   
-  - [~] 34.4 Deploy to Vercel
+  - [ ] 34.4 Deploy to Vercel
     - Connect GitHub repository to Vercel
     - Configure environment variables in Vercel dashboard
     - Enable automatic deployments
     - _Requirements: 19.2, 19.3, 19.4_
 
-- [~] 35. Final checkpoint and documentation update
+- [ ] 35. Final checkpoint and documentation update
   - Ensure all tests pass, verify all features working end-to-end
   - Update `docs/handoff.md` with final project state, deployment URL, and next steps
   - Update `docs/structure.md` with complete file listing
