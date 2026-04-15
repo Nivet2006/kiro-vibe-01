@@ -18,7 +18,7 @@ The implementation follows a bottom-up approach: establishing project infrastruc
   - Set up `.gitignore` to exclude `.env.local`, `node_modules`, `dist`
   - _Requirements: 17.1, 18.1, 19.1, 19.5_
 
-- [~] 2. Create documentation structure
+- [-] 2. Create documentation structure
   - Create `docs/structure.md` documenting all source files and their purposes
   - Create `docs/handoff.md` with initial project state and next steps
   - Create `docs/roadmap.md` documenting feature roadmap and technical decisions
